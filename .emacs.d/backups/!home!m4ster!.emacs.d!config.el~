@@ -1,0 +1,141 @@
+;;; config.el --- Configurações principais do Emacs
+
+;; Inicializa o sistema de pacotes
+(require 'use-package)
+
+(use-package smex
+  :ensure t
+  :bind (
+    ("M-x" . smex)
+    ("C-c C-c M-x" . execute-extended-command)))
+
+;; Set the directory for auto-save files
+(setq auto-save-file-name-transforms
+      `((".*" "~/.emacs.d/auto-save/" t)))
+;; Set the directory for backup files
+(setq backup-directory-alist
+      `((".*" . "~/.emacs.d/backups/")))
+
+
+;; Carregar configurações personalizadas (geralmente gerado automaticamente pelo Emacs)
+(load-file (expand-file-name "custom.el" user-emacs-directory))  ;; Arquivo de configurações personalizadas
+
+
+;;; APPARENCE - Fontes e Tema
+;; Fontes
+(add-to-list 'default-frame-alist `(font . "Iosevka:20"))
+
+;; Temas
+(load-theme 'leuven t)  ;; Carrega o tema "leuven"
+
+;;; Editor e Funcionalidades Básicas
+(menu-bar-mode 0)  ;; Desativa a barra de menu
+(tool-bar-mode 0)  ;; Desativa a barra de ferramentas
+(scroll-bar-mode 0)  ;; Desativa a barra de rolagem
+(global-display-line-numbers-mode 1)  ;; Ativa a numeração de linhas
+(ido-mode 1)  ;; Ativa o modo ido
+(ido-everywhere 1)  ;; Ativa ido em todos os buffers
+(display-splash-screen nil)
+
+
+;;; KEYBINDS - Teclas de atalho
+(global-set-key [M-S-down] 'duplicate-dwim)  ;; Mover linha para baixo
+(global-set-key [M-S-up] 'duplicate-line)  ;; Mover linha para cima
+(global-set-key (kbd "C-x C-;") 'comment-line)  ;; Comentar linha
+(global-set-key (kbd "C-x C-k") 'kill-current-buffer)  ;; Fechar buffer atual
+
+
+;; Abreviações
+(setq-default abbrev-mode t)
+(define-abbrev global-abbrev-table "sout" "System.out.println(")
+(define-abbrev global-abbrev-table "soutt" "System.out.print(")
+
+;;; Autocompletar e Ferramentas de LSP
+;; Company - Autocompletar
+(use-package company
+  :ensure t
+  :config
+  (global-company-mode)  ;; Ativa o auto-completion global
+  (setq company-minimum-prefix-length 1  ;; Número mínimo de caracteres para sugerir autocompletions
+        company-idle-delay 0.0))  ;; Sem delay para autocompletar
+
+;; Ivy - Completação e Pesquisa Interativa
+(use-package ivy
+  :ensure t
+  :config
+  (ivy-mode 1))  ;; Ativa Ivy
+
+;; Flycheck - Linter para detectar erros
+(use-package flycheck
+  :ensure t
+  :init (global-flycheck-mode)  ;; Ativa o Flycheck globalmente
+  :bind (:map flycheck-mode-map
+	      ("M-n" . flycheck-next-error)
+	      ("M-p" . flycheck-previous-error)))  ;; Navegação pelos erros
+
+;; LSP Mode - Suporte para LSP (Language Server Protocol)
+(use-package lsp-mode
+  :ensure t
+  :hook ((c-mode . lsp)
+         (c++-mode . lsp))
+  :commands lsp)
+
+;; LSP UI - Interface para LSP
+(use-package lsp-ui
+  :ensure t
+  :after lsp-mode
+  :commands lsp-ui-mode)
+
+;; ;; Company LSP - Autocompletar com LSP
+;; (use-package company-lsp
+;;   :ensure t
+;;   :after company lsp-mode)
+
+;;; Modos de Linguagem
+;; Haskell
+(use-package haskell-mode
+  :ensure t)
+
+;; PHP
+(use-package php-mode
+  :ensure t)
+
+;; Rust
+(use-package rust-mode
+  :ensure t)
+
+;;; Ferramentas para Git e Compartilhamento de Arquivos
+;; Magit - Interface Git
+(use-package magit
+  :ensure t)
+
+;; Forge - Trabalhar com forges Git (GitHub/GitLab)
+(use-package forge
+  :ensure t
+  :after magit)
+
+;; 0x0.st - Compartilhamento de arquivos
+(use-package 0x0
+  :ensure t)
+
+;;; Ferramentas adicionais
+;; Dumb-jump - "Jump to definition" para qualquer linguagem
+(use-package dumb-jump
+  :ensure t
+  :config
+  (add-hook 'xref-backend-functions #'dumb-jump-xref-activate))
+
+;; Swiper - Pesquisa interativa
+(use-package swiper
+  :ensure t
+  :bind ("M-s" . swiper))
+
+;; Multiple Cursors - Múltiplos cursores
+(use-package multiple-cursors
+  :ensure t
+  :bind (
+	 ("M->" . mc/mark-next-like-this)
+	 ("M-<" . mc/mark-previous-like-this)))
+
+(provide 'config)
+;;; config.el ends here
