@@ -1,2 +1,4 @@
 .emacs.d/eln-cache/
 .emacs.d/backups/
+.emacs.d/ido.last
+.emacs.d/smex-items
