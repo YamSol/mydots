@@ -1,7 +1,0 @@
-;;-*-coding: utf-8;-*-
-(define-abbrev-table 'global-abbrev-table
-  '(
-    ("sout" "System.out.println(" nil :count 0)
-    ("soutt" "System.out.print(" nil :count 0)
-   ))
-
